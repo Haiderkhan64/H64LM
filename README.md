@@ -333,7 +333,7 @@ test_generation(
 ```
 H64LM/
 ├── H64LM-v1.ipynb              # Main notebook
-├── h64lm_v1.py                 # Standalone script
+├── H64LM-v1.py.py              # Standalone script
 ├── requirements.txt            # Dependencies
 ├── LICENSE                     # Apache 2.0
 ├── README.md                   # This file
@@ -342,8 +342,10 @@ H64LM/
 │   ├── tokenizer.json
 │   └── tokenizer_config.json
 |   └── special_tokens_map.json
+|   └── tokenizer.model
 └── checkpoints_h64lm/          # Saved models (LFS)
-    ├── best_model_state_dict.pt
+    ├── tokenizer
+    └── best_model_state_dict.pt
     └── training_history.json
 ```
 
