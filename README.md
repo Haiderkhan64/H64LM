@@ -131,7 +131,7 @@ jupyter notebook H64LM-v1.ipynb
 
 **Option 2: Run as Python Script**
 ```bash
-python h64lm_v1.py
+python H64LM-v1.py
 ```
 
 The script will:
@@ -176,7 +176,7 @@ config = H64LMConfig(
 **For large datasets**:
 - Set `max_samples=-1` to use full WikiText-103 (1.8M samples)
 - Use streaming mode: `streaming=True` for massive datasets
-- Follow the [5-stage training pipeline](https://medium.com/@yourusername) (see references)
+- Follow the [5-stage training pipeline](https://medium.com/@haiderkhan6410/llm-training-pipeline-from-foundation-to-chatbot-4f8bab5a73fe) (see references)
 
 ---
 
@@ -186,7 +186,7 @@ This implementation supports the standard LLM training pipeline:
 
 ### Stage 1: Pretraining (Current Implementation)
 ```bash
-python h64lm_v1.py  # Next-token prediction on raw text
+python H64LM-v1.py  # Next-token prediction on raw text
 ```
 
 ### Stage 2: Instruction Tuning
