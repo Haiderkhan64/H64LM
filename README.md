@@ -217,7 +217,7 @@ dataset = load_dataset("OpenAssistant/oasst1")
 # Multi-turn conversation training
 ```
 
-**See the [Medium article](https://medium.com/@haiderkhan) for full pipeline details.**
+**See the [Medium article](https://medium.com/@haiderkhan6410/llm-training-pipeline-from-foundation-to-chatbot-4f8bab5a73fe) for full pipeline details.**
 
 ---
 
