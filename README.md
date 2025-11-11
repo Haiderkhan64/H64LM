@@ -3,6 +3,7 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![X: @HaiderKhan6410](https://img.shields.io/badge/X-@HaiderKhan6410-black.svg)](https://x.com/HaiderKhan6410)
 
 > **A complete, scalable Mixture-of-Experts language model architecture built entirely from scratch. Ready for billion-parameter pretraining.**
 
