@@ -1,0 +1,28 @@
+# Core dependencies
+numpy>=1.21.0
+tqdm>=4.62.0
+matplotlib>=3.4.0
+
+# PyTorch with CUDA 12.1 support
+--index-url https://download.pytorch.org/whl/cu121
+torch>=2.0.0
+
+# Hugging Face ecosystem
+datasets>=2.14.0
+transformers>=4.30.0
+tokenizers>=0.13.0
+
+# Optional dependencies (install as needed)
+# Uncomment the ones you need:
+
+# Flash Attention (requires CUDA and specific GPU architectures)
+# flash-attn>=2.0.0
+
+# vLLM for fast inference
+# vllm>=0.2.0
+
+# FasterMoE for Mixture of Experts
+# fastermoe
+
+# TensorBoard for logging (usually included with PyTorch)
+tensorboard>=2.13.0
