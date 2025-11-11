@@ -386,7 +386,7 @@ Contributions welcome for:
 ## Citation
 
 ```bibtex
-@software{h64lm2024,
+@software{h64lm2025,
   author = {Haider Khan},
   title = {H64LM: Production-Ready MoE Transformer from Scratch},
   year = {2025},
