@@ -1,4 +1,4 @@
-# H64LM: Production-Ready MoE Transformer from Scratch
+# H64LM:MoE Transformer
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
@@ -389,7 +389,7 @@ Contributions welcome for:
 ```bibtex
 @software{h64lm2025,
   author = {Haider Khan},
-  title = {H64LM: Production-Ready MoE Transformer from Scratch},
+  title = {H64LM: MoE Transformer},
   year = {2025},
   url = {https://github.com/Haiderkhan64/H64LM}
 }
