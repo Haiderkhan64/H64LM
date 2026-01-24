@@ -4,6 +4,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![X: @HaiderKhan6410](https://img.shields.io/badge/X-@HaiderKhan6410-black.svg)](https://x.com/HaiderKhan6410)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/haider-khan-065074277/)
 
 > **A complete, scalable Mixture-of-Experts language model architecture built entirely from scratch. Ready for billion-parameter pretraining.**
 
@@ -16,6 +17,7 @@ H64LM is a **state-of-the-art transformer architecture** implementing modern tec
 **Current demo**: 249M parameters trained on 100K tokens to validate the pipeline. The architecture scales to billions of parameters and trillion-token datasets.
 
 **Key Features**:
+
 - Mixture-of-Experts with load balancing
 - Grouped-Query Attention (GQA) for efficient inference
 - RoPE + ALiBi positional encoding
@@ -47,14 +49,14 @@ H64LMConfig(
 
 ### Components
 
-| Component | Implementation | Benefit |
-|-----------|----------------|---------|
-| **Attention** | Grouped-Query Attention (GQA) | 3× faster inference with KV cache |
-| **Position Encoding** | RoPE + ALiBi hybrid | Length extrapolation beyond training |
-| **Feedforward** | SwiGLU activation | Better than GELU in modern LLMs |
-| **Expert Routing** | Top-2 sparse MoE | Scale capacity without compute cost |
-| **Normalization** | RMSNorm (pre-norm) | Faster and more stable than LayerNorm |
-| **Attention Masking** | Causal + Sliding Window | Efficient long-context modeling |
+| Component             | Implementation                | Benefit                               |
+| --------------------- | ----------------------------- | ------------------------------------- |
+| **Attention**         | Grouped-Query Attention (GQA) | 3× faster inference with KV cache     |
+| **Position Encoding** | RoPE + ALiBi hybrid           | Length extrapolation beyond training  |
+| **Feedforward**       | SwiGLU activation             | Better than GELU in modern LLMs       |
+| **Expert Routing**    | Top-2 sparse MoE              | Scale capacity without compute cost   |
+| **Normalization**     | RMSNorm (pre-norm)            | Faster and more stable than LayerNorm |
+| **Attention Masking** | Causal + Sliding Window       | Efficient long-context modeling       |
 
 ### Layer Architecture
 
@@ -90,6 +92,7 @@ pip install -r requirements.txt
 ```
 
 **requirements.txt**:
+
 ```
 # Core dependencies
 numpy>=1.21.0
@@ -126,16 +129,19 @@ cd H64LM
 The repository includes pretrained tokenizer and checkpoint files via Git LFS.
 
 **Option 1: Run the Jupyter Notebook**
+
 ```bash
 jupyter notebook H64LM-v1.ipynb
 ```
 
 **Option 2: Run as Python Script**
+
 ```bash
 python H64LM-v1.py
 ```
 
 The script will:
+
 1. Load tokenizer from `./mistral_tokenizer/`
 2. Download WikiText-103 dataset (or use local copy)
 3. Train the model with default config
@@ -175,6 +181,7 @@ config = H64LMConfig(
 ```
 
 **For large datasets**:
+
 - Set `max_samples=-1` to use full WikiText-103 (1.8M samples)
 - Use streaming mode: `streaming=True` for massive datasets
 - Follow the [5-stage training pipeline](https://medium.com/@haiderkhan6410/llm-training-pipeline-from-foundation-to-chatbot-4f8bab5a73fe) (see references)
@@ -186,33 +193,42 @@ config = H64LMConfig(
 This implementation supports the standard LLM training pipeline:
 
 ### Stage 1: Pretraining (Current Implementation)
+
 ```bash
 python H64LM-v1.py  # Next-token prediction on raw text
 ```
 
 ### Stage 2: Instruction Tuning
+
 Add instruction-following datasets (Alpaca, Dolly, etc.):
+
 ```python
 dataset = load_dataset("tatsu-lab/alpaca")
 # Continue training with instruction format
 ```
 
 ### Stage 3: RLHF (Reinforcement Learning)
+
 Implement reward model + PPO:
+
 ```python
 # Train reward model on human preferences
 # Apply PPO to optimize policy
 ```
 
 ### Stage 4: Reasoning Enhancement
+
 Add chain-of-thought data:
+
 ```python
 dataset = load_dataset("gsm8k")  # Math reasoning
 # Fine-tune with COT examples
 ```
 
 ### Stage 5: Chat Optimization
+
 Fine-tune on dialogue data:
+
 ```python
 dataset = load_dataset("OpenAssistant/oasst1")
 # Multi-turn conversation training
@@ -234,6 +250,7 @@ config = H64LMConfig(
 ```
 
 The checkpoint loader automatically handles:
+
 - DataParallel `module.` prefix stripping
 - Partial state dict loading
 - Optimizer and scheduler restoration
@@ -281,36 +298,38 @@ test_generation(
 
 ### Model Architecture
 
-| Parameter | Demo Value | Production |
-|-----------|-----------|------------|
-| `hidden_size` | 768 | 4096-8192 |
-| `num_layers` | 6 | 32-96 |
-| `num_attention_heads` | 12 | 32-128 |
-| `num_kv_heads` | 4 | 8-16 |
-| `num_experts` | 8 | 8-64 |
-| `max_position_embeddings` | 1024 | 4096-32768 |
+| Parameter                 | Demo Value | Production |
+| ------------------------- | ---------- | ---------- |
+| `hidden_size`             | 768        | 4096-8192  |
+| `num_layers`              | 6          | 32-96      |
+| `num_attention_heads`     | 12         | 32-128     |
+| `num_kv_heads`            | 4          | 8-16       |
+| `num_experts`             | 8          | 8-64       |
+| `max_position_embeddings` | 1024       | 4096-32768 |
 
 ### Training Config
 
-| Parameter | Value | Notes |
-|-----------|-------|-------|
-| `batch_size` | 16 | Per-GPU |
-| `grad_accum_steps` | 8 | Effective batch: 128 |
-| `learning_rate` | 3e-4 | With warmup |
-| `weight_decay` | 0.01 | Exclude norms/biases |
-| `use_fp16` | True | Mixed precision |
-| `gradient_checkpointing` | True | Memory efficient |
+| Parameter                | Value | Notes                |
+| ------------------------ | ----- | -------------------- |
+| `batch_size`             | 16    | Per-GPU              |
+| `grad_accum_steps`       | 8     | Effective batch: 128 |
+| `learning_rate`          | 3e-4  | With warmup          |
+| `weight_decay`           | 0.01  | Exclude norms/biases |
+| `use_fp16`               | True  | Mixed precision      |
+| `gradient_checkpointing` | True  | Memory efficient     |
 
 ---
 
 ## Model Card
 
 ### Intended Use
+
 - **Primary**: Educational reference for LLM architecture
 - **Secondary**: Foundation for research and experimentation
 - **Production**: Scales to billion-parameter pretraining
 
 ### Capabilities
+
 - Next-token prediction
 - Text generation
 - Multi-GPU training
@@ -318,11 +337,13 @@ test_generation(
 - Ready for instruction tuning and RLHF
 
 ### Limitations
+
 - Demo model trained on small dataset (pipeline validation only)
 - Requires additional training stages for chat/alignment
 - No built-in safety filters (add in Stage 3: RLHF)
 
 ### License
+
 - **Code**: Apache 2.0 License
 - **Tokenizer**: Apache 2.0 (Mistral AI)
 - **Dataset**: Creative Commons (WikiText-103)
@@ -334,7 +355,7 @@ test_generation(
 ```
 H64LM/
 ├── H64LM-v1.ipynb              # Main notebook
-├── H64LM-v1.py.py              # Standalone script
+├── H64LM-v1.py                 # Standalone script
 ├── requirements.txt            # Dependencies
 ├── LICENSE                     # Apache 2.0
 ├── README.md                   # This file
@@ -355,6 +376,7 @@ H64LM/
 ## References
 
 ### Architecture Papers
+
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762) (Transformer)
 - [RoFormer: RoPE](https://arxiv.org/abs/2104.09864)
 - [ALiBi](https://arxiv.org/abs/2108.12409)
@@ -363,11 +385,13 @@ H64LM/
 - [RMSNorm](https://arxiv.org/abs/1910.07467)
 
 ### Implementation Inspirations
+
 - [GPT-NeoX](https://github.com/EleutherAI/gpt-neox) (MoE)
 - [LLaMA](https://github.com/facebookresearch/llama) (RMSNorm, RoPE)
 - [Mistral](https://github.com/mistralai/mistral-src) (Sliding window)
 
 ### Training Pipeline
+
 See [Medium Article: LLM Training Pipeline](https://medium.com/@haiderkhan6410/llm-training-pipeline-from-foundation-to-chatbot-4f8bab5a73fe) for the complete 5-stage training guide (Pretraining → Instruction Tuning → RLHF → Reasoning → Chat).
 
 ---
@@ -375,6 +399,7 @@ See [Medium Article: LLM Training Pipeline](https://medium.com/@haiderkhan6410/l
 ## Contributing
 
 Contributions welcome for:
+
 - Scaling experiments (billion-parameter runs)
 - Additional training stages (RLHF, instruction tuning)
 - Optimization improvements
