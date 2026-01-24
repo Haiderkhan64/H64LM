@@ -16,13 +16,13 @@ H64LM is a **state-of-the-art transformer architecture** implementing modern tec
 **Current demo**: 249M parameters trained on 100K tokens to validate the pipeline. The architecture scales to billions of parameters and trillion-token datasets.
 
 **Key Features**:
-- ✅ Mixture-of-Experts with load balancing
-- ✅ Grouped-Query Attention (GQA) for efficient inference
-- ✅ RoPE + ALiBi positional encoding
-- ✅ Multi-GPU support (DataParallel/DDP)
-- ✅ Mixed-precision (FP16) training
-- ✅ Checkpoint resumption and atomic saves
-- ✅ Fully documented and modular code
+- Mixture-of-Experts with load balancing
+- Grouped-Query Attention (GQA) for efficient inference
+- RoPE + ALiBi positional encoding
+- Multi-GPU support (DataParallel/DDP)
+- Mixed-precision (FP16) training
+- Checkpoint resumption and atomic saves
+- Fully documented and modular code
 
 ---
 
