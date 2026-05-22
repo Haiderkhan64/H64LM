@@ -10,10 +10,10 @@ Original file is located at
 
 This section imports and configures all dependencies required to train the **H64LM** model from scratch.
 
-- **Standard libraries** — file handling, JSON, math, logging, argument parsing, and utilities.  
-- **PyTorch core** — deep learning framework used for model definition, optimization, and mixed-precision training.  
-- **Hugging Face tools** — dataset loading and tokenization (`datasets`, `transformers`, `tokenizers`).  
-- **Optional acceleration libraries** —  
+- **Standard libraries** file handling, JSON, math, logging, argument parsing, and utilities.  
+- **PyTorch core** deep learning framework used for model definition, optimization, and mixed-precision training.  
+- **Hugging Face tools** dataset loading and tokenization (`datasets`, `transformers`, `tokenizers`).  
+- **Optional acceleration libraries**  
   - `flash_attn` for efficient attention  
   - `vLLM` for inference acceleration  
   - `fastermoe` for Mixture-of-Experts support  
@@ -340,7 +340,7 @@ def initialize_weights(module, config: H64LMConfig, depth: int = 0):
 
 """## Rotary Positional Embeddings (RoPE)
 
-This section implements **Rotary Position Embeddings (RoPE)** — a modern, efficient method for encoding token position information directly within the attention mechanism.  
+This section implements **Rotary Position Embeddings (RoPE)** a modern, efficient method for encoding token position information directly within the attention mechanism.  
 RoPE is widely used in advanced LLMs such as **GPT-NeoX**, **LLaMA**, and **Mistral**.
 
 ---
@@ -371,7 +371,7 @@ Applies the precomputed RoPE embeddings to **query (Q)** and **key (K)** tensors
 
 #### Advantages:
 - Enables smooth position representation in continuous space.
-- Maintains **rotational invariance** — enhancing generalization beyond training sequence lengths.
+- Maintains **rotational invariance** enhancing generalization beyond training sequence lengths.
 - Requires **no additional trainable parameters**, keeping the model lightweight.
 
 ---
@@ -445,7 +445,7 @@ def rotate_half(x):
 
 """## GQAAttention: Grouped-Query Attention Module
 
-This module implements the **core attention mechanism** of the H64LM model — a *Grouped-Query / Grouped-Key-Value Attention (GQA)* layer that combines **multi-head attention**, **rotary embeddings (RoPE)**, **ALiBi bias**, **sliding-window masking**, and **optional FlashAttention** acceleration.
+This module implements the **core attention mechanism** of the H64LM model a *Grouped-Query / Grouped-Key-Value Attention (GQA)* layer that combines **multi-head attention**, **rotary embeddings (RoPE)**, **ALiBi bias**, **sliding-window masking**, and **optional FlashAttention** acceleration.
 
 ---
 
@@ -457,7 +457,7 @@ This module implements the **core attention mechanism** of the H64LM model — a
 - **ALiBi bias (optional):**  
   Adds a distance-based bias that enables extrapolation to longer sequences without position embeddings.
 - **Sliding Window Attention:**  
-  Restricts attention span for efficiency and stability — useful in long-sequence modeling.
+  Restricts attention span for efficiency and stability useful in long-sequence modeling.
 - **Attention Sinks:**  
   Keeps a few prefix tokens (“sink positions”) always visible to stabilize early-token dependencies.
 - **FlashAttention (optional):**  
@@ -905,7 +905,7 @@ def checkpoint_forward(module: Callable, use_checkpoint: bool) -> Callable:
 
     return wrapped
 
-"""## H64LMLayer — Transformer Block (Pre-Norm)
+"""## H64LMLayer Transformer Block (Pre-Norm)
 
 A single Transformer layer combining attention + feedforward, with optional MoE experts.  
 Implements a *pre-norm* architecture and supports selective gradient checkpointing.
@@ -989,7 +989,7 @@ class H64LMLayer(nn.Module):
         hidden_states = residual + mlp_output
         return (hidden_states, aux_loss, present_key_value if use_cache else None)
 
-"""## H64LMModel — Core Transformer Backbone
+"""## H64LMModel Core Transformer Backbone
 
 **H64LMModel** defines the main transformer body for H64LM, stacking alternating **dense** and **sparse/MoE** layers with shared embedding and RMS normalization.  
 It produces final hidden states used by downstream heads (e.g., language modeling).
@@ -1127,7 +1127,7 @@ class H64LMModel(nn.Module):
             outputs += (next_cache,)
         return outputs
 
-"""## H64LMForCausalLM — Causal Language Model Head
+"""## H64LMForCausalLM Causal Language Model Head
 
 **H64LMForCausalLM** is the full language model stack built on top of the `H64LMModel` backbone. It is responsible for the final next-token prediction via the language modeling head and the crucial aggregation of all training losses, including the auxiliary MoE terms.
 
@@ -1320,7 +1320,7 @@ class H64LMForCausalLM(nn.Module):
 
         return generated
 
-"""## DedupPipeline — Dataset Curation and Deduplication Utility
+"""## DedupPipeline Dataset Curation and Deduplication Utility
 
 The **DedupPipeline** is a robust preprocessing tool for generating clean, unique, and linguistically diverse text corpora for Large Language Model (LLM) pretraining. It combines streaming ingestion with strict quality filters to maximize data efficiency and model generalization.
 
@@ -1391,7 +1391,7 @@ class DedupPipeline:
                     count += 1
         return filtered
 
-"""## train_tokenizer — Byte-Pair Encoding (BPE) Tokenizer Trainer
+"""## train_tokenizer Byte-Pair Encoding (BPE) Tokenizer Trainer
 
 The **train_tokenizer** function builds a robust BPE tokenizer directly from a text dataset, supporting both **standard** and **streaming** Hugging Face datasets.  
 It extracts a high-quality text sample, trains a subword tokenizer, and exports it for reuse in LLM pretraining workflows.
@@ -1471,7 +1471,7 @@ def train_tokenizer(dataset, vocab_size=32000, save_path="h64lm_tokenizer.json")
     tokenizer.save(save_path)
     logger.info(f"Tokenizer saved to {save_path}")
 
-"""## diagnose_training_data — Tokenizer and Dataset Sanity Checker
+"""## diagnose_training_data Tokenizer and Dataset Sanity Checker
 
 The **diagnose_training_data** utility performs a quick interactive diagnostic on the prepared training dataset and tokenizer configuration.  
 It helps ensure tokenization, special tokens, and sample integrity are correct **before launching pretraining**.
@@ -1546,10 +1546,10 @@ def diagnose_training_data(tokenizer, train_dataset, num_samples=5):
         print(f"Contains PAD: {tokenizer.pad_token_id in token_ids}")
         print(f"Token count: {len(token_ids)}")
 
-"""## create_collate_fn — Dynamic Collation Factory for Language Model Training
+"""## create_collate_fn Dynamic Collation Factory for Language Model Training
 
 The **create_collate_fn** function constructs a **closure-based collation utility** that prepares tokenized batches for causal language model (CLM) training.  
-It ensures alignment between tokenization, padding, and label masking—critical for stable and accurate model optimization.
+It ensures alignment between tokenization, padding, and label masking critical for stable and accurate model optimization.
 
 ---
 
@@ -1637,7 +1637,7 @@ def create_collate_fn(tokenizer, config):
 
     return collate_fn
 
-"""## train_model — Full-Featured Training Loop for Transformer-Based LMs
+"""## train_model Full-Featured Training Loop for Transformer-Based LMs
 
 The **train_model** function implements a complete, reproducible, and fault-tolerant training pipeline for transformer-based language models.  
 It integrates diagnostic checks, gradient scaling, checkpointing, and evaluation into a unified, research-ready training routine.
@@ -1708,9 +1708,9 @@ For each epoch:
 
 ### Key Implementation Features
 
-- **Robust NaN/Inf filtering** — skips unstable batches safely.  
-- **Deterministic and resumable** — checkpoints include optimizer and scheduler state.  
-- **Scalable and GPU-efficient** — supports mixed precision and gradient accumulation.  
+- **Robust NaN/Inf filtering** skips unstable batches safely.  
+- **Deterministic and resumable** checkpoints include optimizer and scheduler state.  
+- **Scalable and GPU-efficient** supports mixed precision and gradient accumulation.  
 - **Clear console diagnostics** via `tqdm` progress bars and structured `[INFO]` logs.
 
 ---
@@ -1914,7 +1914,7 @@ def train_model(
 
     return training_history
 
-"""## validate_model — Robust Evaluation for Language Models
+"""## validate_model Robust Evaluation for Language Models
 
 The **validate_model** function performs accurate and stable validation for transformer-based language models.  
 It computes **average token-weighted loss** and **perplexity**, with safeguards against invalid batches and NaN/Inf propagation.
@@ -1961,7 +1961,7 @@ It computes **average token-weighted loss** and **perplexity**, with safeguards 
 - **NaN/Inf filtering** prevents metric corruption on unstable batches.  
 - **DDP-aware evaluation** handles wrapped models (`model.module`).  
 - **FP16-safe autocasting** for efficient GPU validation.  
-- **Graceful failure handling** — returns `(inf, inf)` if no valid tokens are found.
+- **Graceful failure handling** returns `(inf, inf)` if no valid tokens are found.
 
 ---
 
@@ -2033,7 +2033,7 @@ def validate_model(model, val_loader, device, use_fp16=True):
 
     return avg_loss, perplexity
 
-"""## save_checkpoint — Safe and Atomic Model Checkpointing
+"""## save_checkpoint Safe and Atomic Model Checkpointing
 
 The **save_checkpoint** function securely saves model, optimizer, and scheduler states to disk during training.  
 It is designed for **multi-GPU environments**, **safe serialization**, and **crash-resilient saving**, ensuring no corrupted checkpoints.
@@ -2044,11 +2044,11 @@ It is designed for **multi-GPU environments**, **safe serialization**, and **cra
 
 #### 1. **State Packaging**
 - Collects key training states into a dictionary:
-  - `epoch` — Current epoch number  
-  - `step` — Training step within the epoch  
-  - `model_state_dict` — Model parameters, moved to **CPU** and cloned for safe serialization  
-  - `optimizer_state_dict` — Optimizer state  
-  - `scheduler_state_dict` — Learning rate scheduler state  
+  - `epoch` Current epoch number  
+  - `step` Training step within the epoch  
+  - `model_state_dict` Model parameters, moved to **CPU** and cloned for safe serialization  
+  - `optimizer_state_dict` Optimizer state  
+  - `scheduler_state_dict` Learning rate scheduler state  
 
 > Moving model weights to CPU ensures GPU memory safety and cross-device checkpoint loading.
 
@@ -2095,10 +2095,10 @@ def save_checkpoint(model, optimizer, scheduler, epoch, step, filepath):
             except:
                 pass
 
-"""## load_checkpoint_for_resume — Robust Checkpoint Loader for Training Resumption
+"""## load_checkpoint_for_resume Robust Checkpoint Loader for Training Resumption
 
 The **load_checkpoint_for_resume** function safely restores training state (model, optimizer, and scheduler) from a checkpoint file.  
-It is designed to handle **DataParallel prefixes**, **partial state_dict checkpoints**, and **key mismatches** gracefully — ensuring training can resume smoothly without corruption or crashes.
+It is designed to handle **DataParallel prefixes**, **partial state_dict checkpoints**, and **key mismatches** gracefully ensuring training can resume smoothly without corruption or crashes.
 
 ---
 
@@ -2211,9 +2211,9 @@ def load_checkpoint_for_resume(model, optimizer, scheduler, checkpoint_path, dev
         print("[WARNING] Starting training from scratch")
         return 0, 0
 
-"""## main — Full Training Orchestration Pipeline
+"""## main Full Training Orchestration Pipeline
 
-The **`main()`** function is the **entry point** for end-to-end model training of **H64LM** —  
+The **`main()`** function is the **entry point** for end-to-end model training of **H64LM**  
 a custom causal language model supporting local datasets, local tokenizers, multi-GPU setups, and checkpoint resumption.
 
 This function manages the **entire workflow**:  
@@ -2500,7 +2500,7 @@ def main():
 
     return model, tokenizer, device, history
 
-"""## test_generation — Post-Training Text Generation Evaluation
+"""## test_generation Post-Training Text Generation Evaluation
 
 The **`test_generation()`** function performs a **qualitative test** of a trained language model by prompting it to generate text continuations.  
 It’s typically run **after training** or **after checkpoint restoration** to verify inference quality and model coherence.
@@ -2563,7 +2563,7 @@ def test_generation(model, tokenizer, device, prompt="The history of deep learni
 """### Full Training & Pipeline Verification (20 Epochs)
 
 This training run was conducted **to test the full training pipeline, model architecture, and system functionality**, not to achieve optimal performance.  
-The goal was to ensure that all core components — **data loading, tokenization, model initialization, distributed training (4 GPUs), checkpointing, and text generation** — are working correctly in an end-to-end manner.
+The goal was to ensure that all core components **data loading, tokenization, model initialization, distributed training (4 GPUs), checkpointing, and text generation** are working correctly in an end-to-end manner.
 
 Although the model showed clear **overfitting**, this was **expected** due to:
 - The **small dataset size** compared to the **large model capacity (≈250M parameters)**.  
